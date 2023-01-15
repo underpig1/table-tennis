@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controller</title>
+    <style>
+        body, html {
+            overflow: hidden;
+        }
+
+        * {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            user-drag: none;
+            user-select: none;
+            touch-action: manipulation;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <button style="margin-top: 20px" id="perms" onclick="request_perms()">Allow access</button>
+    <p id="x">Location</p>
+    <script>
+        const x = document.getElementById("x");
+        const refrate = 1/60;
+
+        function request_perms() {
+            DeviceMotionEvent.requestPermission().then(response => {
+                if (response == "granted") {
+                    window.addEventListener("deviceorientation", (e) => {
+                        x.innerText = e.alpha;
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>
