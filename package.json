@@ -1,24 +1,11 @@
 {
   "name": "table-tennis",
   "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "start": "node ./js/main.js"
   },
   "dependencies": {
-    "expo": "~47.0.12",
-    "expo-status-bar": "~1.4.2",
     "express": "^4.18.2",
-    "react": "18.1.0",
-    "react-native": "0.70.5",
-    "react-native-webview": "^11.26.0",
     "socket.io": "^4.5.4"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.12.9"
-  },
-  "private": true
+  }
 }

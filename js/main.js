@@ -11,7 +11,7 @@ const root = path.resolve(__dirname, "..");
 app.use(express.static(root));
 
 app.get("/", function (req, res, next) {
-    res.sendFile("/views/controller.html", { root: root });
+    res.sendFile("/views/index.html", { root: root });
 });
 
 io.on("connection", (socket) => {
@@ -19,6 +19,7 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
         console.log("user disconnected");
     });
+    socket.on("")
 });
 
 server.listen(8000, "0.0.0.0", () => {

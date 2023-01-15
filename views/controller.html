@@ -20,7 +20,6 @@
             -khtml-user-drag: none;
             -moz-user-drag: none;
             -o-user-drag: none;
-            user-drag: none;
             user-select: none;
             touch-action: manipulation;
             box-sizing: border-box;
@@ -30,20 +29,8 @@
 </head>
 <body>
     <button style="margin-top: 20px" id="perms" onclick="request_perms()">Allow access</button>
-    <p id="x">Location</p>
-    <script>
-        const x = document.getElementById("x");
-        const refrate = 1/60;
-
-        function request_perms() {
-            DeviceMotionEvent.requestPermission().then(response => {
-                if (response == "granted") {
-                    window.addEventListener("deviceorientation", (e) => {
-                        x.innerText = e.alpha;
-                    });
-                }
-            });
-        }
-    </script>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="js/public_key.js" type="module"></script>
+    <script src="js/controller.js"></script>
 </body>
 </html>
