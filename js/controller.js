@@ -4,12 +4,15 @@ const refrate = 1 / 60;
 
 function join(p = "Enter join code:") {
     const code = prompt(p);
-    try {
-        if (!key.validate(code)) throw "Invalid key";
-        else socket = io(`https://${key.apply(code, key.decode)}:8000`);
-    }
-    catch {
-        join("Invalid join code. Make sure you're connected to the same wifi network and try again:");
+    if (code != null) {
+        try {
+            if (!key.validate(code)) throw "Invalid key";
+            else socket = io(`http://${key.apply(code, key.decode)}:8000`);
+            alert("connected!");
+        }
+        catch {
+            join("Invalid join code. Make sure you're connected to the same wifi network and try again:");
+        }
     }
 }
 

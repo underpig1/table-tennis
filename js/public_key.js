@@ -1,4 +1,4 @@
-export const key = {
+const key = {
     map: "0123456789.",
     public: "ABCDEFGHJKM",
     encode: (k) => key.public[key.map.indexOf(k)],
@@ -7,3 +7,5 @@ export const key = {
     validate: (map) => map.split("").filter((k) => !key.public.includes(k)).length == 0,
     correct: (map) => map.split("").map((k) => k.toUpperCase()).join("")
 };
+
+exports.key = key;
