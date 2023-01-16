@@ -20,13 +20,47 @@ app.get("/", function (req, res, next) {
     res.sendFile("/views/index.html", { root: root });
 });
 
+var clients = [];
+
+const sfsearch = (socket) => clients.findIndex((c) => c.socket == socket);
+const ssearch = (socket) => clients.filter((c) => c.socket == socket)[0];
+const scale_vec = (vec, scalar) => {
+    return { x: vec.x*scalar, y: vec.y*scalar, z: vec.z*scalar };
+}
+const add_vec = (vec, operand) => {
+    return { x: vec.x + operand.x, y: vec.y + operand.y, z: vec.z + operand.z };
+}
+
 io.on("connection", (socket) => {
-    console.log("user connected");
     socket.emit("join-code", code);
-    socket.on("disconnect", () => {
-        console.log("user disconnected");
+    socket.emit("request-role");
+    socket.on("access-role", (role) => clients.push({ id: clients.length, socket: socket, role: role, data: {} }));
+    socket.on("disconnect", () => clients.splice(sfsearch(socket), 1));
+    socket.on("motion", (e) => {
+        var client = ssearch(socket);
+        
+        if (client.data.hasOwnProperty("acceleration")) {
+            client.data.previous.acceleration = JSON.parse(JSON.stringify(client.data.acceleration));
+            client.data.previous.velocity = JSON.parse(JSON.stringify(client.data.velocity));
+            client.data.previous.position = JSON.parse(JSON.stringify(client.data.position));
+        }
+        
+        client.data.acceleration = e.acceleration;
+        client.data.interval = e.interval*1000;
+
+        if (client.data.hasOwnProperty("previous")) {
+            client.data.velocity = scale_vec(client.data.acceleration, client.data.interval);
+            client.data.position = add_vec(client.data.previous.position, add_vec(scale_vec(client.data.previous.velocity, client.data.interval), scale_vec(client.data.acceleration, 0.5*(client.data.interval**2))));
+        }
+
+        // s=ut+1/2at^2
     });
-    socket.on("orientation", () => null);
+    socket.on("orientation", (e) => {
+        var client = ssearch(socket);
+        client.data.orientation = { alpha: e.alpha, beta: e.beta, gamma: e.gamma };
+        client.data.rotation = { x: e.beta, y: e.gamma, z: e.alpha };
+        // alpha: z/yaw, beta: x/pitch, gamma: y/roll
+    });
 });
 
 server.listen(8000, "0.0.0.0", () => {

@@ -9,7 +9,7 @@ function join(p = "Enter join code:") {
                 socket = io(`http://${key.apply(code, key.decode)}:8000`);
                 if (!socket.connected) throw "No connection";
             }
-            alert("Connected!");
+            connect();
         }
         catch (error) {
             join("Invalid join code. Make sure you're connected to the same wifi network and try again:");
@@ -22,8 +22,16 @@ join();
 function request_perms() {
     DeviceMotionEvent.requestPermission().then(response => {
         if (response == "granted") {
-            window.addEventListener("deviceorientation", (e) => socket.emit("orientation", e));
-            window.addEventListener("devicemotion", (e) => socket.emit("motion", e));
+            window.addEventListener("deviceorientation", (e) => {
+                if (socket) socket.emit("orientation", e);
+            });
+            window.addEventListener("devicemotion", (e) => {
+                if (socket) socket.emit("motion", e);
+            });
         }
     });
+}
+
+function connect() {
+    socket.on("request-role", () => socket.emit("access-role", "controller"));
 }
