@@ -6,7 +6,7 @@ function join(p = "Enter join code:") {
         try {
             if (!key.validate(code)) throw "Invalid key";
             else {
-                socket = io(`http://${key.apply(code, key.decode)}:8000`);
+                socket = io(`https://${key.apply(code, key.decode)}:8000`);
                 if (!socket.connected) throw "No connection";
             }
             connect();

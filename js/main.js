@@ -1,13 +1,18 @@
 const express = require("express");
 const app = express();
-const http = require("http");
-const server = http.createServer(app);
+const https = require("https");
 const { Server } = require("socket.io");
-const io = new Server(server);
 const child_process = require("child_process");
 const path = require("path");
 const { key } = require("./public_key.js");
 const { networkInterfaces } = require("os");
+const fs = require("fs");
+
+const signed_key = fs.readFileSync(__dirname + "/../certs/selfsigned.key");
+const signed_cert = fs.readFileSync(__dirname + "/../certs/selfsigned.crt");
+
+const server = https.createServer({ key: signed_key, cert: signed_cert }, app);
+const io = new Server(server);
 
 const root = path.resolve(__dirname, "..");
 app.use(express.static(root));
@@ -38,7 +43,7 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => clients.splice(sfsearch(socket), 1));
     socket.on("motion", (e) => {
         var client = ssearch(socket);
-        
+
         if (client.data.hasOwnProperty("acceleration")) {
             client.data.previous.acceleration = JSON.parse(JSON.stringify(client.data.acceleration));
             client.data.previous.velocity = JSON.parse(JSON.stringify(client.data.velocity));
@@ -65,5 +70,5 @@ io.on("connection", (socket) => {
 
 server.listen(8000, "0.0.0.0", () => {
     console.log("listening on *:8000");
-    child_process.exec(`explorer "http://${ipv4}:8000"`);
+    child_process.exec(`explorer "https://underpig1.github.io/table-tennis/views/index.html?ip=${ipv4}"`);
 });

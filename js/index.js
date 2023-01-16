@@ -1,4 +1,5 @@
-const socket = io();
+var ip = location.href.match(/\?ip=.*$/g)[0];
+const socket = io(`https://${ip}:8000`);
 
 const join_code = document.getElementById("join-code");
 
